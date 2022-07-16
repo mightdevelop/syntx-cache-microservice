@@ -40,6 +40,7 @@ export class PermissionsCacheService {
     public async removePermissionsFromRole(
         { roleId, permissionsIds }: RemovePermissionsFromRoleRequest
     ): Promise<Void> {
+        this.client.del(...permissionsIds.map(id => id.toString()))
         this.client.srem(
             'roleId:' + roleId,
             (await this.client.smembers('roleId:' + roleId))
