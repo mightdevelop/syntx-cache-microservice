@@ -22,7 +22,9 @@ export class PermissionsCacheService {
     public async doesUserHavePermission(
         key: DoesUserHavePermissionRequest,
     ): Promise<Bool> {
-        const result = await this.client.get(JSON.stringify(key))
+        const jsonKey = JSON.stringify(key)
+        const result = await this.client.get(jsonKey)
+        this.client.expireat(jsonKey, Date.now() + 28800)
         return { bool: result === 'true' }
     }
 

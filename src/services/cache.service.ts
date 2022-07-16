@@ -21,7 +21,10 @@ export class CacheService {
     private client = this.redisService.getClient()
 
     public async getCacheByKey(key: CacheKey): Promise<ProtoCache> {
-        return JSON.parse(await this.client.get(JSON.stringify(key)))
+        const jsonKey = JSON.stringify(key)
+        this.client.expireat(jsonKey, Date.now() + 28800)
+        const data = JSON.parse(await this.client.get(jsonKey))
+        return data
     }
 
     public async setCacheByKey({ key, data, ttl }: SetCacheRequest): Promise<Void> {
