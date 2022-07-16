@@ -23,8 +23,8 @@ export class CacheService {
     public async getCacheByKey(key: CacheKey): Promise<ProtoCache> {
         const jsonKey = JSON.stringify(key)
         this.client.expireat(jsonKey, Date.now() + 28800)
-        const data = JSON.parse(await this.client.get(jsonKey))
-        return data
+        const data = await this.client.get(jsonKey)
+        return { data }
     }
 
     public async setCacheByKey({ key, data, ttl }: SetCacheRequest): Promise<Void> {

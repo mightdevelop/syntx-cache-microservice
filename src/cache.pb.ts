@@ -3,7 +3,6 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
 import { Observable } from "rxjs";
-import { Any } from "./google/protobuf/any.pb";
 
 export const protobufPackage = "cache";
 
@@ -21,7 +20,7 @@ export interface CacheKey {
 
 export interface SetCacheRequest {
   key: CacheKey | undefined;
-  data: Any[];
+  data: string[];
   ttl?: number | undefined;
 }
 
