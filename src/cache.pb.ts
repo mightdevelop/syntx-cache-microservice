@@ -20,7 +20,7 @@ export interface CacheKey {
 
 export interface SetCacheRequest {
   key: CacheKey | undefined;
-  data: string[];
+  data: string;
   ttl?: number | undefined;
 }
 

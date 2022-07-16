@@ -31,7 +31,7 @@ export class CacheService {
         try {
             await this.client.set(
                 JSON.stringify(key),
-                JSON.stringify(data),
+                data,
                 'EX',
                 ttl,
             )
