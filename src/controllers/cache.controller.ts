@@ -6,8 +6,9 @@ import {
     CacheServiceController,
     CacheKey,
     SetCacheRequest,
-} from './cache.pb'
-import { CacheService } from './services/cache.service'
+    Void,
+} from '../cache.pb'
+import { CacheService } from '../services/cache.service'
 import { from, Observable } from 'rxjs'
 
 @Controller()
@@ -22,7 +23,7 @@ export class CacheController implements CacheServiceController {
     }
 
     @GrpcMethod(CACHE_SERVICE_NAME, 'setCacheByKey')
-    public setCacheByKey(dto: SetCacheRequest): Observable<Cache> {
+    public setCacheByKey(dto: SetCacheRequest): Observable<Void> {
         return from(this.cacheService.setCacheByKey(dto))
     }
 

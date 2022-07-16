@@ -1,9 +1,11 @@
-import { CacheModule as NestCacheModule, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { CacheService } from './services/cache.service'
-import { CacheController } from './cache.controller'
+import { CacheController } from './controllers/cache.controller'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { create } from 'cache-manager-redis-store'
 import 'dotenv/config'
+import { RedisModule } from '@liaoliaots/nestjs-redis'
+import { PermissionsCacheService } from './services/permissions-cache.service'
+import { PermissionsCacheController } from './controllers/permissions-cache.controller'
 
 @Module({
     imports: [
@@ -11,19 +13,24 @@ import 'dotenv/config'
             envFilePath: [ `@${process.env.NODE_ENV}.env`, '@.env' ],
             isGlobal: true,
         }),
-        NestCacheModule.registerAsync({
+        RedisModule.forRootAsync({
             inject: [ ConfigService ],
             useFactory: (config: ConfigService) => ({
-                store: create({ db: +config.get('REDIS_DB_NUMBER') }),
-                host: config.get('REDIS_HOST'),
-                port: +config.get('REDIS_PORT'),
-                ttl: 28800 // 8 hours
+                config: {
+                    db: +config.get('REDIS_DB_NUMBER'),
+                    host: config.get('REDIS_HOST'),
+                    port: +config.get('REDIS_PORT'),
+                }
             }),
         }),
     ],
-    controllers: [ CacheController ],
+    controllers: [
+        CacheController,
+        PermissionsCacheController,
+    ],
     providers: [
         CacheService,
+        PermissionsCacheService,
     ],
 })
 export class CacheModule {}

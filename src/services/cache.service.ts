@@ -1,37 +1,41 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import 'dotenv/config'
 import {
     Cache as ProtoCache,
     CacheKey,
     SetCacheRequest,
+    Void,
 } from '../cache.pb'
-import { Cache } from 'cache-manager'
+import { RedisService } from '@liaoliaots/nestjs-redis'
+import { RpcException } from '@nestjs/microservices'
+import { Status } from '@grpc/grpc-js/build/src/constants'
 
 
 @Injectable()
 export class CacheService {
 
     constructor(
-        @Inject(CACHE_MANAGER) private cacheManager: Cache,
+        private readonly redisService: RedisService,
     ) {}
 
+    private client = this.redisService.getClient()
+
     public async getCacheByKey(key: CacheKey): Promise<ProtoCache> {
-        return this.cacheManager.get(JSON.stringify(key))
+        return JSON.parse(await this.client.get(JSON.stringify(key)))
     }
 
-    public async setCacheByKey({ key, data, ttl }: SetCacheRequest): Promise<ProtoCache> {
-        if (ttl && ttl > 1814400) {
-            ttl = 1814400   // 1814400 sec = 3 weeks = max ttl
-        }
-        return {
-            data: JSON.parse(
-                await this.cacheManager.set(
-                    JSON.stringify(key),
-                    JSON.stringify(data),
-                    { ttl }
-                )
+    public async setCacheByKey({ key, data, ttl }: SetCacheRequest): Promise<Void> {
+        try {
+            await this.client.set(
+                JSON.stringify(key),
+                JSON.stringify(data),
+                'EX',
+                ttl,
             )
+        } catch (error) {
+            throw new RpcException({ status: Status.UNAVAILABLE })
         }
+        return {}
     }
 
 }
