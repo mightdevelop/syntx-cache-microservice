@@ -45,7 +45,6 @@ export class PermissionsCacheService {
     public async removePermissionsFromRole(
         { roleId, permissionsIds }: RemovePermissionsFromRoleRequest
     ): Promise<Void> {
-        this.client.del(...permissionsIds.map(id => id.toString()))
         this.client.del(permissionsIds.map(permissionId => JSON.stringify({
             permissionId,
             roleId,
