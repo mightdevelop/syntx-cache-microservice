@@ -34,7 +34,10 @@ export class PermissionsCacheService {
         const jsonKey = JSON.stringify({ permissionId, projectId, userId })
         this.client.set(jsonKey, 'true', 'EX', 28800)
         if (roleId) {
-            this.client.sadd('roleId:' + roleId, jsonKey)
+            this.client.sadd(JSON.stringify({
+                permissionId,
+                roleId,
+            }), jsonKey)
         }
         return {}
     }
@@ -43,11 +46,10 @@ export class PermissionsCacheService {
         { roleId, permissionsIds }: RemovePermissionsFromRoleRequest
     ): Promise<Void> {
         this.client.del(...permissionsIds.map(id => id.toString()))
-        this.client.srem(
-            'roleId:' + roleId,
-            (await this.client.smembers('roleId:' + roleId))
-                .filter(m => permissionsIds.includes(JSON.parse(m).permissionId))
-        )
+        this.client.del(permissionsIds.map(permissionId => JSON.stringify({
+            permissionId,
+            roleId,
+        })))
         return {}
     }
 
