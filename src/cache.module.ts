@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
-import { CacheService } from './services/cache.service'
-import { CacheController } from './controllers/cache.controller'
+import { EntitiesCacheService } from './services/entities-cache.service'
+import { EntitiesCacheController } from './controllers/entities-cache.controller'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import 'dotenv/config'
 import { RedisModule } from '@liaoliaots/nestjs-redis'
@@ -25,11 +25,11 @@ import { PermissionsCacheController } from './controllers/permissions-cache.cont
         }),
     ],
     controllers: [
-        CacheController,
+        EntitiesCacheController,
         PermissionsCacheController,
     ],
     providers: [
-        CacheService,
+        EntitiesCacheService,
         PermissionsCacheService,
     ],
 })
