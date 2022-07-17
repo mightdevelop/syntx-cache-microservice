@@ -33,7 +33,7 @@ export class CacheService {
                 JSON.stringify(key),
                 data,
                 'EX',
-                ttl,
+                ttl | 28800,
             )
         } catch (error) {
             throw new RpcException({ status: Status.UNAVAILABLE })
