@@ -29,7 +29,7 @@ export class EntitiesCacheService {
             this.client.expireat(jsonKey, Date.now() + 28800)
             return { jsonData }
         } catch (error) {
-            throw new RpcException({ status: Status.UNAVAILABLE })
+            throw new RpcException({ code: Status.UNAVAILABLE })
         }
     }
 
@@ -45,7 +45,7 @@ export class EntitiesCacheService {
             )
             return {}
         } catch (error) {
-            throw new RpcException({ status: Status.UNAVAILABLE })
+            throw new RpcException({ code: Status.UNAVAILABLE })
         }
     }
 
@@ -56,7 +56,7 @@ export class EntitiesCacheService {
             await this.client.del(JSON.stringify(key))
             return {}
         } catch (error) {
-            throw new RpcException({ status: Status.UNAVAILABLE })
+            throw new RpcException({ code: Status.UNAVAILABLE })
         }
     }
 
