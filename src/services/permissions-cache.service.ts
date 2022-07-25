@@ -8,6 +8,7 @@ import {
     AddPermissionsToUserRequest,
     RemovePermissionsFromRoleRequest,
     RemoveRolesFromUserRequest,
+    RoleId,
 } from 'src/cache.pb'
 
 
@@ -87,6 +88,18 @@ export class PermissionsCacheService {
         await Promise.all([
             rolesKeys.map(key => this.client.srem(key, permissionsKeys)),
             this.client.del(permissionsKeys),
+        ])
+        return {}
+    }
+
+    public async deleteRole(
+        { roleId }: RoleId
+    ): Promise<Void> {
+        const roleKey: string = 'role:' + roleId
+        const permissionsKeys: string[] = await this.client.smembers('role:' + roleId)
+
+        await Promise.all([
+            this.client.del(roleKey, ...permissionsKeys),
         ])
         return {}
     }

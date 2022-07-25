@@ -9,6 +9,7 @@ import {
     AddPermissionsToUserRequest,
     RemovePermissionsFromRoleRequest,
     RemoveRolesFromUserRequest,
+    RoleId,
 } from '../cache.pb'
 import { PermissionsCacheService } from '../services/permissions-cache.service'
 import { from, Observable } from 'rxjs'
@@ -37,6 +38,11 @@ export class PermissionsCacheController implements PermissionsCacheServiceContro
     @GrpcMethod(PERMISSIONS_CACHE_SERVICE_NAME, 'removeRolesFromUser')
     public removeRolesFromUser(dto: RemoveRolesFromUserRequest): Observable<Void> {
         return from(this.permissionsCacheService.removeRolesFromUser(dto))
+    }
+
+    @GrpcMethod(PERMISSIONS_CACHE_SERVICE_NAME, 'deleteRole')
+    public deleteRole(dto: RoleId): Observable<Void> {
+        return from(this.permissionsCacheService.deleteRole(dto))
     }
 
 }

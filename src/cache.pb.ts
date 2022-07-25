@@ -43,11 +43,15 @@ export interface RemovePermissionsFromRoleRequest {
 
 export interface RemoveRolesFromUserRequest {
   userId: string;
-  rolesIds: number[];
+  rolesIds: string[];
 }
 
 export interface Bool {
   bool?: boolean | undefined;
+}
+
+export interface RoleId {
+  roleId: string;
 }
 
 export const CACHE_PACKAGE_NAME = "cache";
@@ -121,6 +125,8 @@ export interface PermissionsCacheServiceClient {
   ): Observable<Void>;
 
   removeRolesFromUser(request: RemoveRolesFromUserRequest): Observable<Void>;
+
+  deleteRole(request: RoleId): Observable<Void>;
 }
 
 export interface PermissionsCacheServiceController {
@@ -139,6 +145,8 @@ export interface PermissionsCacheServiceController {
   removeRolesFromUser(
     request: RemoveRolesFromUserRequest
   ): Promise<Void> | Observable<Void> | Void;
+
+  deleteRole(request: RoleId): Promise<Void> | Observable<Void> | Void;
 }
 
 export function PermissionsCacheServiceControllerMethods() {
@@ -148,6 +156,7 @@ export function PermissionsCacheServiceControllerMethods() {
       "addPermissionToUserInProject",
       "removePermissionsFromRole",
       "removeRolesFromUser",
+      "deleteRole",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
