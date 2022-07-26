@@ -8,6 +8,7 @@ import {
     DoesUserHavePermissionRequest,
     AddPermissionsToUserRequest,
     RemovePermissionsFromRoleRequest,
+    RemovePermissionsFromUserRequest,
     RemoveRolesFromUserRequest,
     RoleId,
 } from '../cache.pb'
@@ -28,6 +29,11 @@ export class PermissionsCacheController implements PermissionsCacheServiceContro
     @GrpcMethod(PERMISSIONS_CACHE_SERVICE_NAME, 'addPermissionToUserInProject')
     public addPermissionToUserInProject(dto: AddPermissionsToUserRequest): Observable<Void> {
         return from(this.permissionsCacheService.addPermissionToUserInProject(dto))
+    }
+
+    @GrpcMethod(PERMISSIONS_CACHE_SERVICE_NAME, 'removePermissionsFromUser')
+    public removePermissionsFromUser(dto: RemovePermissionsFromUserRequest): Observable<Void> {
+        return from(this.permissionsCacheService.removePermissionsFromUser(dto))
     }
 
     @GrpcMethod(PERMISSIONS_CACHE_SERVICE_NAME, 'removePermissionsFromRole')

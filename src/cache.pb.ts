@@ -41,6 +41,11 @@ export interface RemovePermissionsFromRoleRequest {
   permissionsIds: number[];
 }
 
+export interface RemovePermissionsFromUserRequest {
+  userId: string;
+  permissionsIds: number[];
+}
+
 export interface RemoveRolesFromUserRequest {
   userId: string;
   rolesIds: string[];
@@ -120,6 +125,10 @@ export interface PermissionsCacheServiceClient {
     request: AddPermissionsToUserRequest
   ): Observable<Void>;
 
+  removePermissionsFromUser(
+    request: RemovePermissionsFromUserRequest
+  ): Observable<Void>;
+
   removePermissionsFromRole(
     request: RemovePermissionsFromRoleRequest
   ): Observable<Void>;
@@ -138,6 +147,10 @@ export interface PermissionsCacheServiceController {
     request: AddPermissionsToUserRequest
   ): Promise<Void> | Observable<Void> | Void;
 
+  removePermissionsFromUser(
+    request: RemovePermissionsFromUserRequest
+  ): Promise<Void> | Observable<Void> | Void;
+
   removePermissionsFromRole(
     request: RemovePermissionsFromRoleRequest
   ): Promise<Void> | Observable<Void> | Void;
@@ -154,6 +167,7 @@ export function PermissionsCacheServiceControllerMethods() {
     const grpcMethods: string[] = [
       "doesUserHavePermission",
       "addPermissionToUserInProject",
+      "removePermissionsFromUser",
       "removePermissionsFromRole",
       "removeRolesFromUser",
       "deleteRole",

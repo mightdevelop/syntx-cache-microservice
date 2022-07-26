@@ -7,6 +7,7 @@ import {
     DoesUserHavePermissionRequest,
     AddPermissionsToUserRequest,
     RemovePermissionsFromRoleRequest,
+    RemovePermissionsFromUserRequest,
     RemoveRolesFromUserRequest,
     RoleId,
 } from 'src/cache.pb'
@@ -68,6 +69,23 @@ export class PermissionsCacheService {
         return {}
     }
 
+    public async removePermissionsFromUser(
+        { userId, permissionsIds }: RemovePermissionsFromUserRequest
+    ): Promise<Void> {
+        const keys: string[] = await Promise.all(permissionsIds.map(permissionId => {
+            return this.client.scan(
+                0,
+                'MATCH',
+                '*"userId":"' + userId + '*"permissionId":' + permissionId + '*',
+                'COUNT',
+                10000,
+            )[1]
+        }))
+
+        await this.client.del(keys)
+        return {}
+    }
+
     public async removeRolesFromUser(
         { rolesIds, userId }: RemoveRolesFromUserRequest
     ): Promise<Void> {
@@ -98,9 +116,7 @@ export class PermissionsCacheService {
         const roleKey: string = 'role:' + roleId
         const permissionsKeys: string[] = await this.client.smembers('role:' + roleId)
 
-        await Promise.all([
-            this.client.del(roleKey, ...permissionsKeys),
-        ])
+        await this.client.del(roleKey, ...permissionsKeys)
         return {}
     }
 
